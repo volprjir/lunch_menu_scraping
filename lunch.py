@@ -15,7 +15,7 @@ def get_menus():
     for name, id in restaurants.items():
         src = requests.get(f"https://developers.zomato.com/api/v2.1/dailymenu?res_id={id}",
                            headers={'user_key': API_key})
-        menus[name] = src.json()["daily_menus"][0]["daily_menu"]["dishes"]
+        menus[name] = [] if len(src.json()["daily_menus"]) == 0 else src.json()["daily_menus"][0]["daily_menu"]["dishes"]
     return menus
 
 
