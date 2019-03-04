@@ -70,4 +70,4 @@ def get_v_case():
             else:
                 meals.append(
                     {"name": str(tds[0].text).replace("\t", " "), "price": str(tds[2].text).replace(u'\xa0', u' ')})
-    return meals
+    return soups + meals
