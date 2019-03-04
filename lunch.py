@@ -19,8 +19,7 @@ def get_menus():
     return menus
 
 
-def get_kandelabr():
-    data = get_menus()
+def get_kandelabr(data):
     kandelabr = []
     for dish in data["kandelabr"]:
         kandelabr.append(
@@ -28,8 +27,7 @@ def get_kandelabr():
     return kandelabr
 
 
-def get_smrtak():
-    data = get_menus()
+def get_smrtak(data):
     smrtak = []
     for dish in data["smrtak"]:
         name = dish['dish']['name']
@@ -39,8 +37,7 @@ def get_smrtak():
     return smrtak
 
 
-def get_arrosto():
-    data = get_menus()
+def get_arrosto(data):
     arrosto = []
     for dish in data["arrosto"]:
         name = dish['dish']['name']
