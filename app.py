@@ -1,7 +1,8 @@
+from datetime import datetime
+
 from flask import Flask, render_template
 
-from lunch import get_kandelabr, get_smrtak, get_arrosto, get_v_case, get_menus
-from datetime import datetime
+from lunch import get_arrosto, get_kandelabr, get_menus, get_smrtak, get_v_case
 
 app = Flask(__name__)
 

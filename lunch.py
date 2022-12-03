@@ -1,11 +1,11 @@
+import os
+
 import bs4 as bs
 import requests
 
-API_key = "9ce9667447c7fe8f909b2464236be5ca"
-
 
 def prettify_str(str_to_prettify):
-    return str_to_prettify.rstrip().replace(u'\xa0', u' ')
+    return str_to_prettify.rstrip().replace("\xa0", " ")
 
 
 def get_menus():
@@ -13,9 +13,15 @@ def get_menus():
     restaurants = {"kandelabr": "16506739", "arrosto": "16506695", "smrtak": "16507270"}
 
     for name, id in restaurants.items():
-        src = requests.get(f"https://developers.zomato.com/api/v2.1/dailymenu?res_id={id}",
-                           headers={'user_key': API_key})
-        menus[name] = [] if len(src.json()["daily_menus"]) == 0 else src.json()["daily_menus"][0]["daily_menu"]["dishes"]
+        src = requests.get(
+            f"https://developers.zomato.com/api/v2.1/dailymenu?res_id={id}",
+            headers={"user_key": os.getenv("ZOMATO_API_KEY")},
+        )
+        menus[name] = (
+            []
+            if len(src.json()["daily_menus"]) == 0
+            else src.json()["daily_menus"][0]["daily_menu"]["dishes"]
+        )
     return menus
 
 
@@ -23,28 +29,50 @@ def get_kandelabr(data):
     kandelabr = []
     for dish in data["kandelabr"]:
         kandelabr.append(
-            {"name": prettify_str(dish['dish']['name']), "price": prettify_str(str(dish['dish']['price']))})
+            {
+                "name": prettify_str(dish["dish"]["name"]),
+                "price": prettify_str(str(dish["dish"]["price"])),
+            }
+        )
     return kandelabr
 
 
 def get_smrtak(data):
     smrtak = []
     for dish in data["smrtak"]:
-        name = dish['dish']['name']
+        name = dish["dish"]["name"]
         if "Polévky" in name or "Menu" in name or "Váha" in name or "Hlavní" in name:
             continue
-        smrtak.append({"name": prettify_str(name), "price": prettify_str(str(dish['dish']['price']))})
+        smrtak.append(
+            {
+                "name": prettify_str(name),
+                "price": prettify_str(str(dish["dish"]["price"])),
+            }
+        )
     return smrtak
 
 
 def get_arrosto(data):
     arrosto = []
     for dish in data["arrosto"]:
-        name = dish['dish']['name']
-        if "POLÉVKY" in name or "HLAVNÍ" in name or "TIP" in name or "PIZZA" in name or "DEZERT" in name or \
-                "STÁLÁ" in name or "SPECIÁL" in name or "ZELENINOVÉ" in name:
+        name = dish["dish"]["name"]
+        if (
+            "POLÉVKY" in name
+            or "HLAVNÍ" in name
+            or "TIP" in name
+            or "PIZZA" in name
+            or "DEZERT" in name
+            or "STÁLÁ" in name
+            or "SPECIÁL" in name
+            or "ZELENINOVÉ" in name
+        ):
             continue
-        arrosto.append({"name": prettify_str(name), "price": prettify_str(str(dish['dish']['price']))})
+        arrosto.append(
+            {
+                "name": prettify_str(name),
+                "price": prettify_str(str(dish["dish"]["price"])),
+            }
+        )
     return arrosto
 
 
@@ -66,5 +94,9 @@ def get_v_case():
                 soups.append({"name": tds[0].text, "price": tds[2].text})
             else:
                 meals.append(
-                    {"name": str(tds[0].text).replace("\t", " "), "price": str(tds[2].text).replace(u'\xa0', u' ')})
+                    {
+                        "name": str(tds[0].text).replace("\t", " "),
+                        "price": str(tds[2].text).replace("\xa0", " "),
+                    }
+                )
     return soups + meals
